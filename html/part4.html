@@ -3,14 +3,14 @@
 <meta charset="utf-8">
 
 <head>
-	<title>Arable land (hectares) INDIA</title>
+	<title>Arable land (% of land area) AFRICAN 2010</title>
 	<style>
 
 	.axis {
 		font: 10px sans-serif;
 	}
 	.axis:hover{
-		font-size: 13px;
+		font-size: 18px;
 		color:#333;
 	}
 	.bar{
@@ -19,7 +19,6 @@
 	.bar:hover{
 		fill: #00FF66;
 	}
-
 	.axis path,
 	.axis line {
 		fill: none;
@@ -65,19 +64,19 @@
 	<script>
 
 	var margin = {top: 40, right: 20, bottom: 30, left: 40},
-	width = 1210,
+	width = 1270,
 	height = 500;
 
 
-	var	parseYear = d3.time.format("%Y").parse;
-	var x = d3.scale.ordinal().rangeRoundBands([0, width], .15);
+
+	var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
 
 	var y = d3.scale.linear().range([height, 0]);
 
 	var xAxis = d3.svg.axis()
 	.scale(x)
 	.orient("bottom")
-	.tickFormat(d3.time.format("%Y"));
+
 
 	var yAxis = d3.svg.axis()
 	.scale(y)
@@ -91,23 +90,22 @@
 		return "<strong>value:</strong> <span style='color:yellow'>" + d.value + "</span>";
 	})
 
-
 	var svg = d3.select("body").append("svg")
 	.attr("width", width + margin.left + margin.right)
 	.attr("height", height + margin.top + margin.bottom)
 	.append("g")
 	.attr("transform",
-	"translate(81,10)");
+	"translate(50,10)");
 	svg.call(tip);
-	d3.json("part3.json", function(error, data) {
+	d3.json("../json/part4.json", function(error, data) {
 
 		data.forEach(function(d) {
-			d.year = parseYear(d.year);
+			d.country=d.country;
 			d.value = parseFloat(d.value);
 		});
 
-		x.domain(data.map(function(d) { return d.year; }));
-		y.domain([0, d3.max(data, function(d) { return d.value*1.2; })]);
+		x.domain(data.map(function(d) { return d.country; }));
+		y.domain([0, d3.max(data, function(d) { return d.value; })]);
 
 		svg.append("g")
 		.attr("class", "x axis")
@@ -119,16 +117,16 @@
 		.attr("dy", "-.55em")
 		.attr("transform", "rotate(-90)" );
 
+		svg.append("g")
+		.attr("class", "x axis")
+		.append("text")
+		.attr("transform", "rotate(0)")
+		.attr("x",1170)
+		.attr("dx", "5.71em")
+		.attr("y",550)
+		.style("text-anchor", "end")
+		.text("Countries");
 
-		// svg.append("g")
-		// 		.attr("class", "x axis")
-		// 		.append("text")
-		// 		.attr("transform", "rotate(0)")
-		// 		.attr("x",110)
-		// 		.attr("dx", "105.71em")
-		// 		.attr("y",450)
-		// 		.style("text-anchor", "end")
-		// 		.text("Years");
 
 
 		svg.append("g")
@@ -136,17 +134,17 @@
 		.call(yAxis)
 		.append("text")
 		.attr("transform", "rotate(-90)")
-		.attr("y",6)
-		.attr("dy", ".71em")
+		.attr("y", 6)
+		.attr("dy", "1.91em")
 		.style("text-anchor", "end")
-		.text("Arable land (hectares) INDIA");
+		.text("Arable land (% of land area) AFRICAN 2010");
 
 
 		svg.selectAll("bar")
 		.data(data)
 		.enter().append("rect")
 		.attr("class","bar")
-		.attr("x", function(d) { return x(d.year); })
+		.attr("x", function(d) { return x(d.country); })
 		.attr("width", x.rangeBand())
 		.attr("y", function(d) { return y(d.value); })
 		.attr("height", function(d) { return height - y(d.value); })

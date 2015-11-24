@@ -100,7 +100,7 @@ var svg = d3.select("body").append("svg")
 
 		svg.call(tip);
 
-d3.json("part2.json", function(error, data) {
+d3.json("../json/part2.json", function(error, data) {
 
     data.forEach(function(d) {
         d.year = parseYear(d.year);

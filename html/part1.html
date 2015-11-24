@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 
 <head>
-	<title>Arable land (% of land area) AFRICAN 2010</title>
+	<title>Arable land (% of land area) INDIA</title>
 	<style>
 
 	.axis {
@@ -22,7 +22,7 @@
 	.axis path,
 	.axis line {
 		fill: none;
-		stroke: #000;
+		stroke: #000;  /* to draw the line */
 		shape-rendering: crispEdges;
 	}
 	.d3-tip {
@@ -61,6 +61,7 @@
 
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
 	<script>
 
 	var margin = {top: 40, right: 20, bottom: 30, left: 40},
@@ -68,15 +69,17 @@
 	height = 500;
 
 
-
-	var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+	var	parseYear = d3.time.format("%Y").parse;
+	var x = d3.scale.ordinal().rangeRoundBands([0, width], .25);  /*Scales are functions that map from an input domain to an output range.
+	A scale object, such as that returned by d3.scale.ordinal, is both an object and a function. .25 is the gap between bars*/
 
 	var y = d3.scale.linear().range([height, 0]);
-
+  /* Ordinal scales are for discrete values and linear is for continuous values
+	   rangeRoundBands divide a continuous output range for discrete bands */
 	var xAxis = d3.svg.axis()
 	.scale(x)
 	.orient("bottom")
-
+	.tickFormat(d3.time.format("%Y"));
 
 	var yAxis = d3.svg.axis()
 	.scale(y)
@@ -85,7 +88,7 @@
 
 	var tip = d3.tip()
 	.attr('class', 'd3-tip')
-	.offset([-10, 0])
+	.offset([-10, 0]) // Offset a tooltip relative to its calculated position [top,left].
 	.html(function(d) {
 		return "<strong>value:</strong> <span style='color:yellow'>" + d.value + "</span>";
 	})
@@ -97,15 +100,16 @@
 	.attr("transform",
 	"translate(50,10)");
 	svg.call(tip);
-	d3.json("part4.json", function(error, data) {
+
+	d3.json("../json/part1.json", function(error, data) {
 
 		data.forEach(function(d) {
-			d.country=d.country;
+			d.year = parseYear(d.year);
 			d.value = parseFloat(d.value);
 		});
 
-		x.domain(data.map(function(d) { return d.country; }));
-		y.domain([0, d3.max(data, function(d) { return d.value; })]);
+		x.domain(data.map(function(d) { return d.year; }));
+		y.domain([0, d3.max(data, function(d) { return d.value*1.5; })]);
 
 		svg.append("g")
 		.attr("class", "x axis")
@@ -117,17 +121,6 @@
 		.attr("dy", "-.55em")
 		.attr("transform", "rotate(-90)" );
 
-		svg.append("g")
-		.attr("class", "x axis")
-		.append("text")
-		.attr("transform", "rotate(0)")
-		.attr("x",1170)
-		.attr("dx", "5.71em")
-		.attr("y",550)
-		.style("text-anchor", "end")
-		.text("Countries");
-
-
 
 		svg.append("g")
 		.attr("class", "y axis")
@@ -135,21 +128,21 @@
 		.append("text")
 		.attr("transform", "rotate(-90)")
 		.attr("y", 6)
-		.attr("dy", "1.91em")
+		.attr("dy", "1.1em")
 		.style("text-anchor", "end")
-		.text("Arable land (% of land area) AFRICAN 2010");
+		.text("Arable land (% of land area) INDIA");
 
 
 		svg.selectAll("bar")
 		.data(data)
 		.enter().append("rect")
 		.attr("class","bar")
-		.attr("x", function(d) { return x(d.country); })
-		.attr("width", x.rangeBand())
+		.attr("x", function(d) { return x(d.year); })
+		.attr("width", x.rangeBand()) // get the discrete range band width.
 		.attr("y", function(d) { return y(d.value); })
 		.attr("height", function(d) { return height - y(d.value); })
 		.on('mouseover', tip.show)
-		.on('mouseout', tip.hide);
+		.on('mouseout', tip.hide)
 
 	});
 

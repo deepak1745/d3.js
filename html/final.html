@@ -94,12 +94,12 @@
 
 		//Loading the data
 		var jsonFileName;
-		if(i===0) {jsonFileName = "africa.json";}
-		else if(i===1) {jsonFileName = "asia.json";}
-		else if(i===2) {jsonFileName = "europe.json";}
-		else if(i===3) {jsonFileName = "northAmerica.json";}
-		else if(i===4) {jsonFileName = "oceana.json";}
-		else  {jsonFileName = "southAmerica.json";}
+		if(i===0) {jsonFileName = "../json/africa.json";}
+		else if(i===1) {jsonFileName = "../json/asia.json";}
+		else if(i===2) {jsonFileName = "../json/europe.json";}
+		else if(i===3) {jsonFileName = "../json/northAmerica.json";}
+		else if(i===4) {jsonFileName = "../json/oceana.json";}
+		else  {jsonFileName = "../json/southAmerica.json";}
 
 		d3.json(jsonFileName,function(data){
 			data.data.forEach(function(d){
